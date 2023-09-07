@@ -5,7 +5,7 @@ const getCards = (req, res) => {
     .then((cards) => res.status(200).send(cards))
     .catch(() => res.status(500).send({
       message:
-        'Server error',
+        'Внутренняя ошибка сервера',
     }));
 };
 
@@ -17,11 +17,11 @@ const addCard = (req, res) => {
     .catch((err) => {
       if (err.name === 'CastError' || err.name === 'ValidationError') {
         res.status(400).send({
-          message: 'Transmission of incorrect data',
+          message: 'Переданы некорректные данные при создании карточки',
         });
       } else {
         res.status(500).send({
-          message: 'Server error',
+          message: 'Внутренняя ошибка сервера',
         });
       }
     });
@@ -33,7 +33,7 @@ const deleteCard = (req, res) => {
     .catch((err) => {
       if (err.name === 'DocumentNotFoundError') {
         res.status(404).send({
-          message: 'Document not found',
+          message: 'Карточка не найдена',
         });
       }
     });
@@ -50,20 +50,20 @@ const putLike = (req, res) => {
     .catch((err) => {
       if (err.name === 'CastError' || err.name === 'ValidationError') {
         return res.status(400).send({
-          message: 'Incorrect data',
+          message: 'Переданы некорректные данные при добавлении лайка',
         });
       }
 
       if (err.name === 'DocumentNotFoundError') {
         return res.status(404).send({
-          message: 'Document not found',
+          message: 'Карточка не найдена',
         });
       }
 
       return res
         .status(500)
         .send({
-          message: 'Server error',
+          message: 'Внутренняя ошибка сервера',
         });
     });
 };
@@ -79,20 +79,20 @@ const deleteLike = (req, res) => {
     .catch((err) => {
       if (err.name === 'CastError' || err.name === 'ValidationError') {
         return res.status(400).send({
-          message: 'Incorrect data',
+          message: 'Переданы некорректные данные при удалении карточки',
         });
       }
 
       if (err.name === 'DocumentNotFoundError') {
         return res.status(404).send({
-          message: 'Document id not found',
+          message: 'Карточка не найдена',
         });
       }
 
       return res
         .status(500)
         .send({
-          message: 'Server error',
+          message: 'Внутренняя ошибка сервера',
         });
     });
 };

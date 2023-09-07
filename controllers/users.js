@@ -6,7 +6,7 @@ const getUsers = (req, res) => {
     .then((users) => {
       if (users.length === 0) {
         res.status(400).send({
-          message: 'Incorrect data',
+          message: 'Переданы некорректные данные при поиске пользователей',
         });
       } else {
         res.status(200).send(users);
@@ -16,7 +16,7 @@ const getUsers = (req, res) => {
       res
         .status(500)
         .send({
-          message: 'Server error',
+          message: 'Внутренняя ошибка сервера',
         });
     });
 };
@@ -30,20 +30,20 @@ const getUserById = (req, res) => {
     .catch((err) => {
       if (err.name === 'CastError') {
         return res.status(400).send({
-          message: 'Incorrect data',
+          message: 'Переданы некорректные данные при поиске пользователя',
         });
       }
 
       if (err.name === 'DocumentNotFoundError') {
         return res.status(404).send({
-          message: 'User not found',
+          message: 'Пользователь не найден',
         });
       }
 
       return res
         .status(500)
         .send({
-          message: 'Server error',
+          message: 'Внутренняя ошибка сервера',
         });
     });
 };
@@ -56,14 +56,14 @@ const createUser = (req, res) => {
     .catch((err) => {
       if (err.name === 'CastError' || err.name === 'ValidationError') {
         return res.status(400).send({
-          message: `${Object.values(err.errors).map(() => err.message).join(', ')}`,
+          message: 'Переданы некорректные данные при создании пользователя',
         });
       }
 
       return res
         .status(500)
         .send({
-          message: 'Server error',
+          message: 'Внутренняя ошибка сервера',
         });
     });
 };
@@ -79,20 +79,20 @@ const updateUserInfo = (req, res) => {
     .catch((err) => {
       if (err.name === 'CastError' || err.name === 'ValidationError') {
         return res.status(400).send({
-          message: `${Object.values(err.errors).map(() => err.message).join(', ')}`,
+          message: 'Переданы некорректные данные при обновлении информации пользователя',
         });
       }
 
       if (err.name === 'DocumentNotFoundError') {
         return res.status(404).send({
-          message: 'User not found',
+          message: 'Пользователь не найден',
         });
       }
 
       return res
         .status(500)
         .send({
-          message: 'Server error',
+          message: 'Внутренняя ошибка сервера',
         });
     });
 };
@@ -108,10 +108,10 @@ const updateAvatar = (req, res) => {
       console.log(err);
       if (err.name === 'CastError' || err.name === 'ValidationError') {
         res.status(400).send({
-          message: `${Object.values(err.errors).map(() => err.message).join(', ')}`
+          message: 'Переданы некорректные данные при обновлении аватара пользователя'
         });
       } else {
-        res.status(500).send('Server error');
+        res.status(500).send('Внутренняя ошибка сервера');
       }
     });
 };

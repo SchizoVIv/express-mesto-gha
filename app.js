@@ -4,9 +4,9 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const router = require('./routes');
 
-const { PORT = 3000 } = process.env;
+const { PORT = 3000, MY_DB = 'mongodb://127.0.0.1:27017/vycohort69' } = process.env;
 
-mongoose.connect('mongodb://127.0.0.1:27017/vycohort69', {
+mongoose.connect(MY_DB, {
   useNewUrlParser: true,
 }).then(() => {
   console.log('connected to db');

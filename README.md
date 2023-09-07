@@ -16,7 +16,7 @@
 
 ## __Ссылка на репозиторий GitHub__
 
-https://schizoviv.github.io/express-mesto-gha
+https://github.com/SchizoVIv/express-mesto-gha
 
 ### __Используемые технологии__
 
