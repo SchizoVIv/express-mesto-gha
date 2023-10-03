@@ -6,27 +6,18 @@ const {
   UnauthorizedError,
   BadRequestError,
   NotFoundError,
-  GeneralError,
 } = require('../utils/errors');
 
 const SOLT_ROUNDS = 10;
 
 const getUsers = (req, res, next) => {
   UserModel.find()
-    .orFail()
-    .then((users) => {
-      if (users.length === 0) {
-        throw new NotFoundError('Cписок пользователей пуст');
-      } else {
-        res.status(200).send(users);
-      }
-    })
+    .then((users) => res.status(200).send(users))
     .catch((err) => next(err));
 };
 
 const getUserById = (req, res, next) => {
   UserModel.findById(req.params.id)
-    .orFail()
     .then((user) => {
       if (user === null) throw new NotFoundError('Пользователь с таким id не найден');
 
@@ -56,7 +47,7 @@ const getUser = (req, res, next) => {
 const updateUserInfo = (req, res, next) => {
   const { name, about } = req.body;
 
-  UserModel.findByIdAndUpdate(req.user._id, { name, about }, { new: true })
+  UserModel.findByIdAndUpdate(req.user._id, { name, about }, { new: true, runValidators: true })
     .orFail()
     .then((user) => {
       if (user) return res.status(200).send(user);
@@ -64,7 +55,7 @@ const updateUserInfo = (req, res, next) => {
       throw new NotFoundError('Пользователь с таким id не найден');
     })
     .catch((err) => {
-      if (err.name === 'ValidationError' || err.name === 'CastError') {
+      if (err.name === 'ValidationError') {
         next(new BadRequestError('Переданы некорректные данные при обновлении профиля'));
       } else {
         next(err);
@@ -75,14 +66,14 @@ const updateUserInfo = (req, res, next) => {
 const updateAvatar = (req, res, next) => {
   const { avatar } = req.body;
 
-  UserModel.findByIdAndUpdate(req.user._id, { avatar }, { new: true })
+  UserModel.findByIdAndUpdate(req.user._id, { avatar }, { new: true, runValidators: true })
     .then((user) => {
       if (user) return res.status(200).send(user);
 
       throw new NotFoundError('Пользователь с таким id не найден');
     })
     .catch((err) => {
-      if (err.name === 'ValidationError' || err.name === 'CastError') {
+      if (err.name === 'ValidationError') {
         next(new BadRequestError('Переданы некорректные данные при обновлении аватара пользователя'));
       } else {
         next(err);
@@ -101,33 +92,23 @@ const createUser = async (req, res, next) => {
 
     const user = await UserModel.create({ email, password: hash });
 
-    if (!user) {
-      throw new GeneralError('Внутренняя ошибка сервера');
-    }
-
     res.status(201).json(user);
   } catch (err) {
-    console.log('ошибка');
     next(err);
   }
 };
 
 const login = async (req, res, next) => {
   try {
-    if (!req.body) {
-      throw new GeneralError('На сервере произошла ошибка');
-    }
-
     const { email, password } = req.body;
 
     if (!email || !password) {
-      console.log('hi');
       throw new BadRequestError('Не указан логин или пароль');
     }
 
     const user = await UserModel.findOne({ email }).select('+password');
 
-    if (!user || user === null) {
+    if (!user) {
       throw new UnauthorizedError('Такого пользователя не существует');
     }
 

@@ -1,6 +1,6 @@
 const CardModel = require('../models/card');
 const {
-  UnauthorizedError,
+  ForbiddenError,
   BadRequestError,
   NotFoundError,
 } = require('../utils/errors');
@@ -19,8 +19,9 @@ const addCard = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'CastError' || err.name === 'ValidationError') {
         next(new BadRequestError('Переданы некорректные данные при создании карточки'));
+      } else {
+        next(err);
       }
-      next(err);
     });
 };
 
@@ -31,7 +32,7 @@ const deleteCard = (req, res, next) => {
   CardModel.findById({ _id: cardId })
     .then((card) => {
       if (!card) {
-        throw new NotFoundError('Карточка не найдена');
+        throw new ForbiddenError('Нет прав доступа');
       }
       const { owner: cardOwnerId } = card;
       if (cardOwnerId.valueOf() !== userId) {
@@ -41,7 +42,7 @@ const deleteCard = (req, res, next) => {
     })
     .then((deletedCard) => {
       if (!deletedCard) {
-        throw new UnauthorizedError('Карточка не найдена');
+        throw new NotFoundError('Карточка не найдена');
       }
       return res.send({ data: deletedCard });
     })
@@ -57,14 +58,13 @@ const putLike = (req, res, next) => {
     .orFail()
     .then((card) => res.status(200).send(card))
     .catch((err) => {
-      if (err.name === 'CastError' || err.name === 'ValidationError') {
-        throw new BadRequestError('Переданы некорректные данные при добавлении лайка');
+      if (err.name === 'CastError') {
+        next(new BadRequestError('Переданы некорректные данные при добавлении лайка'));
+      } else if (err.name === 'DocumentNotFoundError') {
+        next(new NotFoundError('Карточка не найдена'));
+      } else {
+        next(err);
       }
-
-      if (err.name === 'DocumentNotFoundError') {
-        throw new NotFoundError('Карточка не найдена');
-      }
-      next(err);
     });
 };
 
@@ -75,16 +75,15 @@ const deleteLike = (req, res, next) => {
     { new: true },
   )
     .orFail()
-    .then((card) => res.status(201).send(card))
+    .then((card) => res.status(200).send(card))
     .catch((err) => {
-      if (err.name === 'CastError' || err.name === 'ValidationError') {
+      if (err.name === 'CastError') {
         throw new BadRequestError('Переданы некорректные данные при удалении карточки');
-      }
-
-      if (err.name === 'DocumentNotFoundError') {
+      } else if (err.name === 'DocumentNotFoundError') {
         throw new NotFoundError('Карточка не найдена');
+      } else {
+        next(err);
       }
-      next(err);
     });
 };
 

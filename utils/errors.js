@@ -1,10 +1,3 @@
-class GeneralError extends Error {
-  constructor(message) {
-    super(message);
-    this.statusCode = 500;
-  }
-}
-
 class UnauthorizedError extends Error {
   constructor(message) {
     super(message);
@@ -40,11 +33,15 @@ class NotFoundError extends Error {
   }
 }
 
+const error404 = (req, res) => {
+  throw new NotFoundError('Ошибка 404. Страница не найдена');
+};
+
 module.exports = {
   ConflictError,
   UnauthorizedError,
   ForbiddenError,
   BadRequestError,
   NotFoundError,
-  GeneralError,
+  error404,
 };

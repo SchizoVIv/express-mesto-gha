@@ -15,32 +15,32 @@ const signupValidation = celebrate({
     about: Joi.string().min(2).max(30),
     avatar: Joi.string().pattern(
       new RegExp(
-        '(https://www.|http://www.|https://|http://)?[a-zA-Z0-9]{2,}(.[a-zA-Z0-9]{2,})(.[a-zA-Z0-9]{2,})?'
-      )
+        '(https://www.|http://www.|https://|http://)?[a-zA-Z0-9]{2,}(.[a-zA-Z0-9]{2,})(.[a-zA-Z0-9]{2,})?',
+      ),
     ),
   }),
 });
 
 const updateUserValidation = celebrate({
   body: Joi.object().keys({
-    name: Joi.string().min(2).max(30),
-    about: Joi.string().min(2).max(30),
+    name: Joi.string().required().min(2).max(30),
+    about: Joi.string().required().min(2).max(30),
   }),
 });
 
 const updateAvatarValidation = celebrate({
   body: Joi.object().keys({
-    avatar: Joi.string().pattern(
+    avatar: Joi.string().required().pattern(
       new RegExp(
-        '(https://www.|http://www.|https://|http://)?[a-zA-Z0-9]{2,}(.[a-zA-Z0-9]{2,})(.[a-zA-Z0-9]{2,})?'
-      )
+        '(https://www.|http://www.|https://|http://)?[a-zA-Z0-9]{2,}(.[a-zA-Z0-9]{2,})(.[a-zA-Z0-9]{2,})?',
+      ),
     ),
   }),
 });
 
 const idValidation = celebrate({
   params: Joi.object().keys({
-    id: Joi.string().pattern(new RegExp('^[0-9a-fA-F]{24}$')),
+    id: Joi.string().required().pattern(new RegExp('^[0-9a-fA-F]{24}$')),
   }),
 });
 
@@ -51,8 +51,8 @@ const cardValidation = celebrate({
       .required()
       .pattern(
         new RegExp(
-          '(https://www.|http://www.|https://|http://)?[a-zA-Z0-9]{2,}(.[a-zA-Z0-9]{2,})(.[a-zA-Z0-9]{2,})?'
-        )
+          '(https://www.|http://www.|https://|http://)?[a-zA-Z0-9]{2,}(.[a-zA-Z0-9]{2,})(.[a-zA-Z0-9]{2,})?',
+        ),
       ),
   }),
 });
