@@ -21,10 +21,6 @@ const getUserById = (req, res, next) => {
     .then((user) => {
       if (user === null) throw new NotFoundError('Пользователь с таким id не найден');
 
-      if (!validator.isMongoId(req.params.id)) {
-        throw new BadRequestError('Введите правильный ID пользователя');
-      }
-
       return res.status(200).send(user);
     })
     .catch((err) => {

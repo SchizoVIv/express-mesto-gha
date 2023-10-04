@@ -9,7 +9,7 @@ const auth = (req, res, next) => {
   const token = authorization.replace(bearer, '');
 
   if (!token) {
-    throw new UnauthorizedError('Токен отсутствует');
+    return next(new UnauthorizedError('Токен отсутствует'));
   }
 
   let payload;
@@ -17,7 +17,7 @@ const auth = (req, res, next) => {
   try {
     payload = jwt.verify(token, process.env.NODE_ENV === 'production' ? process.env.JWT_SECRET : 'dev_secret');
   } catch (error) {
-    next(error);
+    return next(new UnauthorizedError('Вы не авторизированы'));
   }
 
   req.user = payload;
